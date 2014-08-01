@@ -1,8 +1,10 @@
 #! /usr/bin/env python
 
-# Taken from:
+# Originally taken from:
 # http://www.pythoncentral.io/finding-duplicate-files-with-python/
 # Original Auther: Andres Torres
+
+# Adapted to check only compute the md5sum of files with the same size
 
 import os
 import sys
@@ -24,6 +26,38 @@ def findDup(parentFolder):
                 dups[file_hash].append(path)
             else:
                 dups[file_hash] = [path]
+    return dups
+
+
+def findDupSize(parentFolder):
+    # Dups in format {hash:[names]}
+    dups = {}
+    for dirName, subdirs, fileList in os.walk(parentFolder):
+        print('Scanning %s...' % dirName)
+        for filename in fileList:
+            # Get the path to the file
+            path = os.path.join(dirName, filename)
+            # Calculate hash
+            file_size = os.path.getsize(path)
+            # Add or append the file path
+            if file_size in dups:
+                dups[file_size].append(path)
+            else:
+                dups[file_size] = [path]
+    return dups
+
+
+def findDupHash(file_list):
+    print('Comparing: ')
+    for filename in file_list:
+        print('    {}'.format(filename))
+    dups = {}
+    for path in file_list:
+        file_hash = hashfile(path)
+        if file_hash in dups:
+            dups[file_hash].append(path)
+        else:
+            dups[file_hash] = [path]
     return dups
 
 
@@ -64,16 +98,22 @@ def printResults(dict1):
 
 if __name__ == '__main__':
     if len(sys.argv) > 1:
-        dups = {}
+        dup_size = {}
         folders = sys.argv[1:]
         for i in folders:
             # Iterate the folders given
             if os.path.exists(i):
-                # Find the duplicated files and append them to the dups
-                joinDicts(dups, findDup(i))
+                # Find the duplicated files and append them to dup_size
+                joinDicts(dup_size, findDupSize(i))
             else:
                 print('%s is not a valid path, please verify' % i)
                 sys.exit()
+
+        print('Comparing files with the same size...')
+        dups = {}
+        for dup_list in dup_size.values():
+            if len(dup_list) > 1:
+                joinDicts(dups, findDupHash(dup_list))
         printResults(dups)
     else:
         print('Usage: python dupFinder.py folder or python dupFinder.py folder1 folder2 folder3')
