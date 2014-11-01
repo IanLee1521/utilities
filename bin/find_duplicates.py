@@ -96,7 +96,7 @@ def printResults(dict1):
         print('No duplicate files found.')
 
 
-if __name__ == '__main__':
+def main():
     if len(sys.argv) > 1:
         dup_size = {}
         folders = sys.argv[1:]
@@ -117,3 +117,7 @@ if __name__ == '__main__':
         printResults(dups)
     else:
         print('Usage: python dupFinder.py folder or python dupFinder.py folder1 folder2 folder3')
+
+
+if __name__ == '__main__':
+    sys.exit(main())
