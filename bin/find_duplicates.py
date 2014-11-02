@@ -4,17 +4,17 @@
 # http://www.pythoncentral.io/finding-duplicate-files-with-python/
 # Original Auther: Andres Torres
 
-# Adapted to check only compute the md5sum of files with the same size
+# Adapted to only compute the md5sum of files with the same size
 
 import os
 import sys
 import hashlib
 
 
-def findDup(parentFolder):
+def find_duplicate(parent_dir):
     # Dups in format {hash:[names]}
     dups = {}
-    for dirName, subdirs, fileList in os.walk(parentFolder):
+    for dirName, subdirs, fileList in os.walk(parent_dir):
         print('Scanning %s...' % dirName)
         for filename in fileList:
             # Get the path to the file
@@ -29,10 +29,10 @@ def findDup(parentFolder):
     return dups
 
 
-def findDupSize(parentFolder):
+def find_duplicate_size(parent_dir):
     # Dups in format {hash:[names]}
     dups = {}
-    for dirName, subdirs, fileList in os.walk(parentFolder):
+    for dirName, subdirs, fileList in os.walk(parent_dir):
         print('Scanning %s...' % dirName)
         for filename in fileList:
             # Get the path to the file
@@ -47,7 +47,7 @@ def findDupSize(parentFolder):
     return dups
 
 
-def findDupHash(file_list):
+def find_duplicate_hash(file_list):
     print('Comparing: ')
     for filename in file_list:
         print('    {}'.format(filename))
@@ -62,7 +62,7 @@ def findDupHash(file_list):
 
 
 # Joins two dictionaries
-def joinDicts(dict1, dict2):
+def join_dicts(dict1, dict2):
     for key in dict2.keys():
         if key in dict1:
             dict1[key] = dict1[key] + dict2[key]
@@ -81,11 +81,14 @@ def hashfile(path, blocksize=65536):
     return hasher.hexdigest()
 
 
-def printResults(dict1):
+def print_results(dict1):
     results = list(filter(lambda x: len(x) > 1, dict1.values()))
     if len(results) > 0:
         print('Duplicates Found:')
-        print('The following files are identical. The name could differ, but the content is identical')
+        print(
+            'The following files are identical. The name could differ, but the'
+            ' content is identical'
+            )
         print('___________________')
         for result in results:
             for subresult in result:
@@ -104,7 +107,7 @@ def main():
             # Iterate the folders given
             if os.path.exists(i):
                 # Find the duplicated files and append them to dup_size
-                joinDicts(dup_size, findDupSize(i))
+                join_dicts(dup_size, find_duplicate_size(i))
             else:
                 print('%s is not a valid path, please verify' % i)
                 sys.exit()
@@ -113,10 +116,12 @@ def main():
         dups = {}
         for dup_list in dup_size.values():
             if len(dup_list) > 1:
-                joinDicts(dups, findDupHash(dup_list))
-        printResults(dups)
+                join_dicts(dups, find_duplicate_hash(dup_list))
+        print_results(dups)
     else:
-        print('Usage: python dupFinder.py folder or python dupFinder.py folder1 folder2 folder3')
+        print(
+            'Usage: python find_duplicates.py folder [folder2] [folder3] ...'
+            )
 
 
 if __name__ == '__main__':
