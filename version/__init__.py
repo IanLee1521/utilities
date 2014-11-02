@@ -5,7 +5,7 @@ import os
 import subprocess
 
 
-def get_version(version):
+def pep386(version):
     """
     Returns a PEP 386-compliant version number from VERSION
 
