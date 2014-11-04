@@ -103,34 +103,27 @@ def print_results(dict1):
 def main():
     parser = argparse.ArgumentParser(description='Find duplicate files')
     parser.add_argument(
-        'folders', type=str, nargs='+',
+        'folders', metavar='dir', type=str, nargs='+',
         help='A directory to parse for duplicates',
         )
     args = parser.parse_args()
-    print args.folders
 
-    if len(sys.argv) > 1:
-        dup_size = {}
-        folders = sys.argv[1:]
-        for i in folders:
-            # Iterate the folders given
-            if os.path.exists(i):
-                # Find the duplicated files and append them to dup_size
-                join_dicts(dup_size, find_duplicate_size(i))
-            else:
-                print('%s is not a valid path, please verify' % i)
-                sys.exit()
+    dup_size = {}
+    for i in args.folders:
+        # Iterate the folders given
+        if os.path.exists(i):
+            # Find the duplicated files and append them to dup_size
+            join_dicts(dup_size, find_duplicate_size(i))
+        else:
+            print('%s is not a valid path, please verify' % i)
+            sys.exit()
 
-        print('Comparing files with the same size...')
-        dups = {}
-        for dup_list in dup_size.values():
-            if len(dup_list) > 1:
-                join_dicts(dups, find_duplicate_hash(dup_list))
-        print_results(dups)
-    else:
-        print(
-            'Usage: python find_duplicates.py folder [folder2] [folder3] ...'
-            )
+    print('Comparing files with the same size...')
+    dups = {}
+    for dup_list in dup_size.values():
+        if len(dup_list) > 1:
+            join_dicts(dups, find_duplicate_hash(dup_list))
+    print_results(dups)
 
 
 if __name__ == '__main__':
