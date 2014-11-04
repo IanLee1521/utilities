@@ -116,7 +116,7 @@ def main():
             join_dicts(dup_size, find_duplicate_size(i))
         else:
             print('%s is not a valid path, please verify' % i)
-            sys.exit()
+            return 1
 
     print('Comparing files with the same size...')
     dups = {}
