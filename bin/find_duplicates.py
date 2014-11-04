@@ -6,6 +6,7 @@
 
 # Adapted to only compute the md5sum of files with the same size
 
+import argparse
 import os
 import sys
 import hashlib
@@ -100,6 +101,14 @@ def print_results(dict1):
 
 
 def main():
+    parser = argparse.ArgumentParser(description='Find duplicate files')
+    parser.add_argument(
+        'folders', type=str, nargs='+',
+        help='A directory to parse for duplicates',
+        )
+    args = parser.parse_args()
+    print args.folders
+
     if len(sys.argv) > 1:
         dup_size = {}
         folders = sys.argv[1:]
