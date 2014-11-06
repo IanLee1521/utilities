@@ -12,21 +12,26 @@ import sys
 import hashlib
 
 
-def find_duplicate(parent_dir):
-    # Dups in format {hash:[names]}
+def find_duplicates(folders):
+    """
+    Takes in an iterable of folders and prints & returns the duplicate files
+    """
+    dup_size = {}
+    for i in folders:
+        # Iterate the folders given
+        if os.path.exists(i):
+            # Find the duplicated files and append them to dup_size
+            join_dicts(dup_size, find_duplicate_size(i))
+        else:
+            print('%s is not a valid path, please verify' % i)
+            return {}
+
+    print('Comparing files with the same size...')
     dups = {}
-    for dirName, subdirs, fileList in os.walk(parent_dir):
-        print('Scanning %s...' % dirName)
-        for filename in fileList:
-            # Get the path to the file
-            path = os.path.join(dirName, filename)
-            # Calculate hash
-            file_hash = hashfile(path)
-            # Add or append the file path
-            if file_hash in dups:
-                dups[file_hash].append(path)
-            else:
-                dups[file_hash] = [path]
+    for dup_list in dup_size.values():
+        if len(dup_list) > 1:
+            join_dicts(dups, find_duplicate_hash(dup_list))
+    print_results(dups)
     return dups
 
 
@@ -108,22 +113,7 @@ def main():
         )
     args = parser.parse_args()
 
-    dup_size = {}
-    for i in args.folders:
-        # Iterate the folders given
-        if os.path.exists(i):
-            # Find the duplicated files and append them to dup_size
-            join_dicts(dup_size, find_duplicate_size(i))
-        else:
-            print('%s is not a valid path, please verify' % i)
-            return 1
-
-    print('Comparing files with the same size...')
-    dups = {}
-    for dup_list in dup_size.values():
-        if len(dup_list) > 1:
-            join_dicts(dups, find_duplicate_hash(dup_list))
-    print_results(dups)
+    find_duplicates(args.folders)
 
 
 if __name__ == '__main__':
