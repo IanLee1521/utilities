@@ -4,35 +4,41 @@
 # http://www.pythoncentral.io/finding-duplicate-files-with-python/
 # Original Auther: Andres Torres
 
-# Adapted to check only compute the md5sum of files with the same size
+# Adapted to only compute the md5sum of files with the same size
 
+import argparse
 import os
 import sys
 import hashlib
 
 
-def findDup(parentFolder):
-    # Dups in format {hash:[names]}
+def find_duplicates(folders):
+    """
+    Takes in an iterable of folders and prints & returns the duplicate files
+    """
+    dup_size = {}
+    for i in folders:
+        # Iterate the folders given
+        if os.path.exists(i):
+            # Find the duplicated files and append them to dup_size
+            join_dicts(dup_size, find_duplicate_size(i))
+        else:
+            print('%s is not a valid path, please verify' % i)
+            return {}
+
+    print('Comparing files with the same size...')
     dups = {}
-    for dirName, subdirs, fileList in os.walk(parentFolder):
-        print('Scanning %s...' % dirName)
-        for filename in fileList:
-            # Get the path to the file
-            path = os.path.join(dirName, filename)
-            # Calculate hash
-            file_hash = hashfile(path)
-            # Add or append the file path
-            if file_hash in dups:
-                dups[file_hash].append(path)
-            else:
-                dups[file_hash] = [path]
+    for dup_list in dup_size.values():
+        if len(dup_list) > 1:
+            join_dicts(dups, find_duplicate_hash(dup_list))
+    print_results(dups)
     return dups
 
 
-def findDupSize(parentFolder):
+def find_duplicate_size(parent_dir):
     # Dups in format {hash:[names]}
     dups = {}
-    for dirName, subdirs, fileList in os.walk(parentFolder):
+    for dirName, subdirs, fileList in os.walk(parent_dir):
         print('Scanning %s...' % dirName)
         for filename in fileList:
             # Get the path to the file
@@ -47,7 +53,7 @@ def findDupSize(parentFolder):
     return dups
 
 
-def findDupHash(file_list):
+def find_duplicate_hash(file_list):
     print('Comparing: ')
     for filename in file_list:
         print('    {}'.format(filename))
@@ -62,7 +68,7 @@ def findDupHash(file_list):
 
 
 # Joins two dictionaries
-def joinDicts(dict1, dict2):
+def join_dicts(dict1, dict2):
     for key in dict2.keys():
         if key in dict1:
             dict1[key] = dict1[key] + dict2[key]
@@ -81,11 +87,14 @@ def hashfile(path, blocksize=65536):
     return hasher.hexdigest()
 
 
-def printResults(dict1):
+def print_results(dict1):
     results = list(filter(lambda x: len(x) > 1, dict1.values()))
     if len(results) > 0:
         print('Duplicates Found:')
-        print('The following files are identical. The name could differ, but the content is identical')
+        print(
+            'The following files are identical. The name could differ, but the'
+            ' content is identical'
+            )
         print('___________________')
         for result in results:
             for subresult in result:
@@ -96,24 +105,16 @@ def printResults(dict1):
         print('No duplicate files found.')
 
 
-if __name__ == '__main__':
-    if len(sys.argv) > 1:
-        dup_size = {}
-        folders = sys.argv[1:]
-        for i in folders:
-            # Iterate the folders given
-            if os.path.exists(i):
-                # Find the duplicated files and append them to dup_size
-                joinDicts(dup_size, findDupSize(i))
-            else:
-                print('%s is not a valid path, please verify' % i)
-                sys.exit()
+def main():
+    parser = argparse.ArgumentParser(description='Find duplicate files')
+    parser.add_argument(
+        'folders', metavar='dir', type=str, nargs='+',
+        help='A directory to parse for duplicates',
+        )
+    args = parser.parse_args()
 
-        print('Comparing files with the same size...')
-        dups = {}
-        for dup_list in dup_size.values():
-            if len(dup_list) > 1:
-                joinDicts(dups, findDupHash(dup_list))
-        printResults(dups)
-    else:
-        print('Usage: python dupFinder.py folder or python dupFinder.py folder1 folder2 folder3')
+    find_duplicates(args.folders)
+
+
+if __name__ == '__main__':
+    sys.exit(main())

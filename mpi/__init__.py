@@ -7,10 +7,12 @@ comm = MPI.COMM_WORLD
 
 
 def get_host():
+    """Get the hostname that this task is running on"""
     return MPI.Get_processor_name()
 
 
 def get_rank():
+    """Get the rank within all tasks mpi is running"""
     return comm.Get_rank()
 
 
