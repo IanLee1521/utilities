@@ -13,5 +13,6 @@ def get_files(path, ext=None):
     return [
         os.path.abspath(fname)
         for fname in os.listdir(path)
+        if os.path.isfile(fname)
         if fname.endswith(ext)
         ]
