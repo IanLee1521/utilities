@@ -15,3 +15,10 @@ def get_stdout(cmd):
     Fork the specified command, returning stdout
     """
     return launch(cmd)[0]
+
+
+def get_stderr(cmd):
+    """
+    Fork the specified command, returning stderr
+    """
+    return launch(cmd)[1]
