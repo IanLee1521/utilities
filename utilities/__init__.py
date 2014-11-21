@@ -3,7 +3,7 @@
 from subprocess import Popen, PIPE
 
 
-def launch(cmd):
+def popen(cmd):
     """
     Fork the specified command, returning a tuple of (stdout, stderr)
     """
@@ -14,11 +14,11 @@ def get_stdout(cmd):
     """
     Fork the specified command, returning stdout
     """
-    return launch(cmd)[0]
+    return popen(cmd)[0]
 
 
 def get_stderr(cmd):
     """
     Fork the specified command, returning stderr
     """
-    return launch(cmd)[1]
+    return popen(cmd)[1]
