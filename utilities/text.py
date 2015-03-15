@@ -39,10 +39,89 @@ def get_functions(text, startswith='def '):
 
 
 def get_classes(text, startswith='class '):
-    """
-    Parse text to retrive the functions and methods defined
-    """
+    """Parse text to retrive the functions and methods defined"""
     return get_definition(text, startswith)
+
+
+def find_options(filename):
+    """
+    Grab all of the ini style options in a specified file (ignoring sections)
+    """
+    with open(filename) as fp:
+        text = [
+            line for line in fp.readlines()
+            if not line.startswith('#')
+            if '=' in line
+            ]
+        return sorted(list(set(opt.split()[0] for opt in text)))
+
+
+def find_functions(text):
+    """Find all function names defined on all lines of the given text"""
+
+    return list(set([
+        re.split('[ (]*', line)[1]
+        for line in [
+            line.strip()
+            for line in text.splitlines()
+            if 'def ' in line
+            ]
+        if line.startswith('def ')
+        ]))
+
+
+def find_missing_keywords(keywords, text):
+    """
+    Return the subset of keywords which are missing from the given text
+    """
+    found = set()
+    for key in keywords:
+        if key in text:
+            found.add(key)
+    return list(set(keywords) - found)
+
+
+def glob_filepath(path, ext=None):
+    """
+    Return all of the absolute filepaths in a given directory
+
+    Optionally, return only those that end with ``ext``
+    """
+
+    if ext is None:
+        ext = ''
+
+    return [
+        os.path.abspath(os.path.join(path, f))
+        for f in os.listdir(path)
+        if f.endswith(ext)
+        ]
+
+
+def find_missing_functions(keywords, text):
+    """
+    %timeit find_missing_funcs(funcs, text)
+    1 loops, best of 3: 973 ms per loop
+    """
+    found = set()
+    for line in text.splitlines():
+        if not line.strip().startswith('def '):
+            for f in keywords:
+                if f in line:
+                    found.add(f)
+    return list(set(keywords) - found)
+
+
+def find_used_modules(modules, text):
+    """
+    Given a list of modules, return the set of all those imported in text
+    """
+    used = set()
+    for line in text.splitlines():
+        for mod in modules:
+            if 'import' in line and mod in line:
+                used.add(mod)
+    return used
 
 
 def reverse_readline(filename, buf_size=8192):
