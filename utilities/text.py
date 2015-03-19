@@ -156,3 +156,13 @@ def reverse_readline(filename, buf_size=8192):
             for index in range(len(lines) - 1, 0, -1):
                 yield lines[index]
         yield segment
+
+
+def grep(lines, pattern=None):
+    if pattern is None:
+        pattern = r''
+
+    regex = re.compile(pattern)
+    for line in lines:
+        if regex.search(line):
+            yield line
