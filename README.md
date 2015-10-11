@@ -46,4 +46,4 @@ License
 -------
 
 utilities is licensed under the [MIT License](http://en.wikipedia.org/wiki/MIT_License).
-The full license text is available in [LICENSE](https://github.com/IanLee1521/utilities/blob/master/LICENSE.txt).
+The full license text is available in [LICENSE](https://github.com/IanLee1521/utilities/blob/master/LICENSE).
