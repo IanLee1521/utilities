@@ -4,7 +4,7 @@ utilities
 Utility scripts for useful tasks.
 
 Bash Redirection Tricks
-=======================
+-----------------------
 
 From http://stackoverflow.com/a/19279694
 
@@ -41,3 +41,9 @@ From http://stackoverflow.com/a/19279694
 
     ### STDOUT to STATUSFILE, stderr to LOGFILE and all output to the screen
     #exec > >(tee ${STATUSFILE}) 2> >(tee ${LOGFILE} >&2)
+
+License
+-------
+
+utilities is licensed under the [MIT License](http://en.wikipedia.org/wiki/MIT_License).
+The full license text is available in [LICENSE](https://github.com/IanLee1521/utilities/blob/master/LICENSE.txt).
