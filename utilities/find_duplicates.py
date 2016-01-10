@@ -43,13 +43,15 @@ def find_duplicate_size(parent_dir):
         for filename in fileList:
             # Get the path to the file
             path = os.path.join(dirName, filename)
-            # Calculate hash
-            file_size = os.path.getsize(path)
-            # Add or append the file path
-            if file_size in dups:
-                dups[file_size].append(path)
-            else:
-                dups[file_size] = [path]
+            # Check to make sure the path is valid.
+            if os.path.exists(path):
+                # Calculate hash
+                file_size = os.path.getsize(path)
+                # Add or append the file path
+                if file_size in dups:
+                    dups[file_size].append(path)
+                else:
+                    dups[file_size] = [path]
     return dups
 
 
@@ -77,7 +79,10 @@ def join_dicts(dict1, dict2):
 
 
 def hashfile(path, blocksize=65536):
-    afile = open(path, 'rb')
+    try:
+        afile = open(path, 'rb')
+    except:
+        pass
     hasher = hashlib.md5()
     buf = afile.read(blocksize)
     while len(buf) > 0:
