@@ -44,14 +44,15 @@ def find_duplicate_size(parent_dir):
             # Get the path to the file
             path = os.path.join(dirName, filename)
             # Check to make sure the path is valid.
-            if os.path.exists(path):
-                # Calculate hash
-                file_size = os.path.getsize(path)
-                # Add or append the file path
-                if file_size in dups:
-                    dups[file_size].append(path)
-                else:
-                    dups[file_size] = [path]
+            if not os.path.exists(path):
+                continue
+            # Calculate sizes
+            file_size = os.path.getsize(path)
+            # Add or append the file path
+            if file_size in dups:
+                dups[file_size].append(path)
+            else:
+                dups[file_size] = [path]
     return dups
 
 
