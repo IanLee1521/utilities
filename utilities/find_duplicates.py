@@ -79,10 +79,7 @@ def join_dicts(dict1, dict2):
 
 
 def hashfile(path, blocksize=65536):
-    try:
-        afile = open(path, 'rb')
-    except:
-        pass
+    afile = open(path, 'rb')
     hasher = hashlib.md5()
     buf = afile.read(blocksize)
     while len(buf) > 0:
