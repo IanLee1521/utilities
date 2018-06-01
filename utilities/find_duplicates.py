@@ -12,7 +12,7 @@ import sys
 import hashlib
 
 
-def find_duplicates(folders):
+def find_duplicates(folders, ignore_zero=False):
     """
     Takes in an iterable of folders and prints & returns the duplicate files
     """
@@ -27,6 +27,11 @@ def find_duplicates(folders):
             return {}
 
     print('Comparing files with the same size...')
+
+    if ignore_zero and (0 in dup_size):
+        print('Ignoring zero sized files...')
+        dup_size.pop(0)
+
     dups = {}
     for dup_list in dup_size.values():
         if len(dup_list) > 1:
@@ -115,10 +120,14 @@ def main():
     parser.add_argument(
         'folders', metavar='dir', type=str, nargs='+',
         help='A directory to parse for duplicates',
-        )
+    )
+    parser.add_argument(
+        '--ignore-zero', action='store_true',
+        help='Ignore duplicates where filesize is zero.'
+    )
     args = parser.parse_args()
 
-    find_duplicates(args.folders)
+    find_duplicates(args.folders, ignore_zero=args.ignore_zero)
 
 
 if __name__ == '__main__':
