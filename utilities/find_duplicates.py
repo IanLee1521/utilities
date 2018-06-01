@@ -70,8 +70,10 @@ def find_duplicate_hash(file_list):
     return dups
 
 
-# Joins two dictionaries
 def join_dicts(dict1, dict2):
+    """
+    Joins two dictionaries
+    """
     for key in dict2.keys():
         if key in dict1:
             dict1[key] = dict1[key] + dict2[key]
