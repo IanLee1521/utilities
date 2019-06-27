@@ -1,0 +1,28 @@
+#!/bin/bash
+#
+# mvsha256dir (Time-stamp: <2019-05-12 11:14:22 josephhall>)
+#
+# This script accepts filenames from the command-line, then 
+# calculates the sha256 hash of the file, creates a directory 
+# named after the sha256 hash and finally moves the original 
+# file to the new directory. (This script is public domain.)
+#
+#
+#wrap in for loop to handle multiple files
+for oldName in "$@" ; do
+
+    #First, store the sha256 hash value in a variable.  NOTE:
+    #"cut" extracts hash value as 2nd field (`-f 2`) of a 
+    #list where the delimeter is a space (`-d " "`)
+    sha256print=`openssl dgst -sha256 ${oldName} | cut -f 2 -d " "`
+
+    #create the new directory using the hash value
+    mkdir ${sha256print}
+
+    #mv the file to the new directory
+    mv ${oldName} ${sha256print}
+
+    #report out to the user what we've done
+    echo just moved ${oldName} to ${sha256print}/${oldName}
+
+done
