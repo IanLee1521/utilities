@@ -15,6 +15,7 @@ setup(
     entry_points={
         'console_scripts': [
             'find_duplicates = utilities.find_duplicates:main',
+            'fix_numbering = utilities.fix_numbering:main',
         ],
     },
     classifiers=[
