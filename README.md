@@ -1,6 +1,8 @@
 utilities
 =========
 
+[![Join the chat at https://gitter.im/IanLee1521/utilities](https://badges.gitter.im/IanLee1521/utilities.svg)](https://gitter.im/IanLee1521/utilities?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 Utility scripts for useful tasks.
 
 Bash Redirection Tricks
